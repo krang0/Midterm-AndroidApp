@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Pressable, SafeAreaView, StatusBar, Image, Flat
 
 const GALLERY_DATA = [
   {id: '1', caption: 'Pencil', url: 'https://fastly.picsum.photos/id/61/200/300.jpg?hmac=4gnmCaXyXsOzE8pxb43yUtdfZnVbnUSGdPaJdh-aCUo'},
-  {id: '2', caption: 'X', url: 'https://fastly.picsum.photos/id/61/200/300.jpg?hmac=4gnmCaXyXsOzE8pxb43yUtdfZnVbnUSGdPaJdh-aCUo'},
+  {id: '2', caption: 'X', url: 'https://fastly.picsum.photos/id/239/200/300.jpg?hmac=jBV5mUiY1RXDAmu4rQXOdWeutyztlxqFSOVpnJ-QUb8'},
   {id: '3', caption: 'Gala', url: 'https://fastly.picsum.photos/id/617/200/300.jpg?hmac=WVwPHGFiGQ3OhdyeRk0pQ82EUCJuksc-Zf7YjirDr9Q'},
   {id: '4', caption: 'CL', url: 'https://fastly.picsum.photos/id/845/200/300.jpg?hmac=DfR-wrajwQRkxeIHc0FhGL5Pn8rIOnYPzHRdY08PajE'},
   {id: '5', caption: 'F13', url: 'https://fastly.picsum.photos/id/399/200/300.jpg?hmac=qEzeLaSETRM-rnt81YtrfXeUeHQnjAkbWh7rc8NBaMQ'},
@@ -23,32 +23,48 @@ export default function App() {
       <View style={styles.viewerContainer}>
         {selectedImage ? (
           <>
-            <Image 
-              source={{ uri: selectedImage.url }} 
-              style={{width: 100, height: 100}} 
+            <Image
+              source={{ uri: selectedImage.url }}
+              style={styles.mainImage}
               resizeMode="contain" 
             />
-            <Text>{selectedImage.caption}</Text>
+            <Text style={styles.captionText}>{selectedImage.caption}</Text>
           </>
         ) : (
-          <View>
-            <Text>Tap an image to view it</Text>
+          <View style={styles.placeholder}>
+            <Text style={styles.placeholderText}>Tap an image to view it</Text>
           </View>
         )}
       </View>
 
       <View style={styles.gridContainer}>
-        <Text>Image Grid will be here</Text>
+        <FlatList
+          data={GALLERY_DATA}
+          keyExtractor={(item) => item.id}
+          numColumns={2} 
+          renderItem={({ item }) => (
+            <Pressable
+              style={styles.thumbnailContainer}
+              onPress={() => setSelectedImage(item)} 
+            >
+              <Image
+                source={{ uri: item.url }}
+                style={styles.thumbnailImage}
+              />
+            </Pressable>
+          )}
+        />
       </View>
     </SafeAreaView>
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5', 
-    paddingTop: 40, 
+    paddingTop: StatusBar.currentHeight || 40, 
   },
   title: {
     fontSize: 24,
@@ -63,10 +79,43 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     margin: 10,
     borderRadius: 8,
+    overflow: 'hidden',
+  },
+  mainImage: {
+    width: '90%',
+    height: '80%',
+    borderRadius: 6,
+    marginBottom: 10,
+  },
+  captionText: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginTop: 10,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  placeholder: {
+    flex: 1, 
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  placeholderText: {
+    fontSize: 16,
+    color: '#888',
   },
   gridContainer: {
-    flex: 1, 
+    flex: 1,
     padding: 5,
-    backgroundColor: '#ddd'
+  },
+  thumbnailContainer: {
+    flex: 1, 
+    margin: 5,
+    aspectRatio: 1, 
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  thumbnailImage: {
+    width: '100%',
+    height: '100%',
   },
 });
